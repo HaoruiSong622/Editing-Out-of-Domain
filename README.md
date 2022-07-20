@@ -1,9 +1,6 @@
-# Editing-Out-of-Domain
+# Editing Out-of-domain GAN Inversion via Differential Activations
 
-## Overview
-Despite the demonstrated editing capacity in the latent space of a pretrained GAN model, inverting real-world images is stuck in a dilemma that the reconstruction cannot be faithful to the original input. The main reason for this is that the distributions between training and real-world data are misaligned, and because of that, it is unstable of GAN inversion for real image editing. In this paper, we propose a novel GAN prior based editing framework to tackle the out-of-domain inversion problem with a composition-decomposition paradigm. In particular, during the phase of composition, we introduce a differential activation module for detecting semantic changes from a global perspective, \ie, the relative gap between the features of edited and unedited images. With the aid of the generated Diff-CAM mask, a coarse reconstruction can intuitively be composited by the paired original and edited images. In this way, the attribute-irrelevant regions can be survived in almost whole, while the quality of such an intermediate result is still limited by an unavoidable ghosting effect. Consequently, in the decomposition phase, we further present a GAN prior based deghosting network for separating the final fine edited image from the coarse reconstruction. Extensive experiments exhibit superiorities over the state-of-the-art methods, in terms of qualitative and quantitative evaluations. The robustness and flexibility of our method is also validated on both scenarios of single attribute and multi-attribute manipulations.
-
-![](doc/model.jpg)
+This is the official implementation of the paper "Editing Out-of-domain GAN Inversion via Differential Activations"
 
 ## Prerequisite
 + Linux
@@ -35,8 +32,8 @@ Despite the demonstrated editing capacity in the latent space of a pretrained GA
   |[deghosting.pt](https://drive.google.com/file/d/1gfb1M8mFl4GlEiQsGDWjJRQ5zetrVbi0/view?usp=sharing)  | The weight for the deghosting network.  |  
   Here we chose [pSp](https://github.com/eladrich/pixel2style2pixel) encoder to do StyleGAN Inversion. Please Download the pretrained pSp [checkpoint](https://drive.google.com/file/d/1bMTNWkh5LArlaWSc_wa8VKyq2V42T2z0/view?usp=sharing).
 
-### Run the Demonstration
-```pycon
+### Run the Model
+```commandline
 python image_process.py --device 0
 --diffcam_ckpt_path path_to_diffcam_weight
 --deghosting_ckpt_path path_to_deghosting_weight
@@ -45,3 +42,23 @@ python image_process.py --device 0
 --output_dir path_to_output_dir
 --psp_ckptpath path_to_psp_encoder_ffhq_weight
 ```
+
+## Training
+In order to train our model, you need to train the Diff-CAM module and 
+deghosting network one by one. 
+### Training Diff-CAM module
+The first step is to train the Diff-CAM module. Run the following command 
+to train the module.
+```commandline
+python trainerDA.py --trainset_path path_to_training_dataset
+--testset_path path_to_testing_dataset
+--device 0
+--DA_batch_size your_batch_size
+--num_workers your_dataloader_num_workers
+--direction_path ./directions
+--exp_dir
+/mnt/dataset/songhaorui/stylegan-inversion-outs/after_acception/trainDA_with_Editing_2
+--psp_ckptpath
+/mnt/dataset/songhaorui/psp_pretrained/psp_ffhq_encode.pt
+```
+
