@@ -70,3 +70,14 @@ python gen_dataset.py --diffcam_ckpt_path path_to_diffcam_path
 --dst_image_dir path_to_output_ghosting_dataset
 --psp_ckptpath path_to_psp_encoder_ffhq_weight
 ```
+
+### Training Deghosting Network
+After generating the ghosting image dataset, you can finally train the 
+deghosting network. Run the following command to train the network.
+```commandline
+python train_deghosting.py --trainset_lq_path path_to_trainset_lq
+--testset_lq_path path_to_testset_lq
+--trainset_tg_path path_to_trainset_tg
+--testset_tg_path path_to_testset_tg
+--exp_dir path_to_experiment_directory
+```
